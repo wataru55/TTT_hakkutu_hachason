@@ -1,0 +1,11 @@
+# Node.jsの依存パッケージ
+node_modules/
+
+# ログファイル
+*.log
+
+# OS固有のファイル
+.DS_Store
+
+# ビルド成果物
+/dist
