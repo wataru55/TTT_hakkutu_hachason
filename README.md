@@ -25,5 +25,5 @@ cd frontend
 
 実行
 ```bash
-npm dev run
+npm run dev
 ```
