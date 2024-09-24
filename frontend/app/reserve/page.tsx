@@ -63,13 +63,18 @@ export default function Reserve() {
                     id: ID,
                 }),
             });
+            
+
+            alert("予約が完了しました。")
+            setSelectedSeat(null);
+            setReserver('');
+            setState(null);
+            setID(null);
 
             if (!response.ok) {
                 throw new Error('予約に失敗しました。');
             }
-             // 予約成功後に display ページへ遷移
-             router.push(`/display`);
-
+             
         } catch (error) {
             console.error(error);
             alert('予約に失敗しました。再度お試しください。');
@@ -95,7 +100,7 @@ export default function Reserve() {
                                             }`}
                                             onClick={() => {
                                                 setSelectedSeat(info.seat_num);
-                                                setState(info.reserver);
+                                                setState(2);
                                                 setID(info.id)                             
                                             }}                                            
                                         >
