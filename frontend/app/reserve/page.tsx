@@ -8,12 +8,15 @@ interface Info {
     id: number;
     seat_num: number;
     availability: number;
+    reserver: number;
 }
 
 export default function Reserve() {      
     const [infos, setInfo] = useState<Info[]>([]);
     const [selectedSeat, setSelectedSeat] = useState<number | null>(null); // 選択された座席番号
-    const [name, setName] = useState<string>(''); // 入力された名前
+    const [reserver, setReserver] = useState<string>(''); // 入力された名前
+    const [state, setState] = useState<number | null>(null); // 予約状態
+    const [ID, setID] = useState<number | null>(null); // id
     const router = useRouter(); // useRouter フックを使用
 
     useEffect(() => {
@@ -41,30 +44,32 @@ export default function Reserve() {
             alert('座席番号を選択してください。');
             return;
         }
-        if (name.trim() === '') {
+        if (reserver.trim() === '') {
             alert('名前を入力してください。');
             return;
         }
 
         try {
             // 予約処理をバックエンドに送信
-            const response = await fetch('http://localhost:3001/reserve', {
+            const response = await fetch('http://localhost:5000/external_data', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    seatNumber: selectedSeat,
-                    userName: name,
+                    seat_num: selectedSeat,
+                    reserver: reserver,
+                    availability: state,
+                    id: ID,
                 }),
             });
 
             if (!response.ok) {
                 throw new Error('予約に失敗しました。');
             }
+             // 予約成功後に display ページへ遷移
+             router.push(`/display`);
 
-            // 予約成功後に display ページへ遷移
-            router.push(`/display?page?seatNumber=${selectedSeat}&userName=${encodeURIComponent(name)}`);
         } catch (error) {
             console.error(error);
             alert('予約に失敗しました。再度お試しください。');
@@ -82,13 +87,17 @@ export default function Reserve() {
                         <h1 className='text-center text-3xl font-bold mb-5 text-emerald-300'>利用可能</h1>
                         <ul>
                             {infos.map((info) => (
-                                info.availability === 1 ? (
+                                info.availability === 0 ? (
                                     <li key={info.id} className='mb-3'>
                                         <button 
                                             className={`p-2 rounded-lg bg-slate-800 hover:bg-gray-900 ${
                                                 selectedSeat === info.seat_num ? 'bg-emerald-500' : ''
                                             }`}
-                                            onClick={() => setSelectedSeat(info.seat_num)} // 座席選択ハンドラー
+                                            onClick={() => {
+                                                setSelectedSeat(info.seat_num);
+                                                setState(info.reserver);
+                                                setID(info.id)                             
+                                            }}                                            
                                         >
                                             Seat Number: {info.seat_num}
                                         </button>                                
@@ -101,7 +110,7 @@ export default function Reserve() {
                         <h1 className='text-center text-3xl font-bold text-red-600 mb-5'>利用不可</h1>
                         <ul>
                             {infos.map((info) => (
-                                info.availability === 0 ? (
+                                info.availability === 1 ? (
                                     <li key={info.id} className='mb-4'>
                                         <button 
                                             className='p-2 rounded-lg bg-gray-800 hover:bg-gray-900 cursor-not-allowed' 
@@ -128,9 +137,9 @@ export default function Reserve() {
                     <input 
                         type="text" 
                         className='text-black text-center p-2 w-1/2 rounded-lg'
-                        placeholder='名前を入力してください'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        placeholder='ロッカー番号を入力してください'
+                        value={reserver}
+                        onChange={(e) => setReserver(e.target.value)}
                     />
                 </div>
                 <div>
