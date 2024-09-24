@@ -19,17 +19,19 @@ export default function Reserve() {
     useEffect(() => {
         const fetchFaceStatus = async () => {
             try {
-                const response = await fetch("http://localhost:3001/posts");
-                const data: Info[] = await response.json();
-                setInfo(data);
+              const response = await fetch("http://localhost:5000/person_status", {
+                cache: "no-cache",
+              });
+              const data: Info[] = await response.json();
+              setInfo(data);
             } catch (err) {
-                console.error(err);
+              console.error(err);
             }
-        }; 
+          };
 
         fetchFaceStatus();
 
-        const interval = setInterval(fetchFaceStatus, 10000); // 定期的にフェッチ
+        const interval = setInterval(fetchFaceStatus, 1000); // 定期的にフェッチ
         return () => clearInterval(interval); // クリーンアップ
     }, []);
 
