@@ -96,11 +96,13 @@ def hello():
 # '/person_status'エンドポイントにアクセスしたとき、person_detectedの状態を返す
 @app.route('/person_status')
 def person_status():
-    data = {
-        "seatnum": "S1",
-        "availability": person_detected,
-        'id': "1"
-    }
+    data = [
+        {
+            "seat_num": "S1",
+            "availability": person_detected,
+            'id': "1"
+        },
+    ]
     return jsonify(data)
 
 # クリーンアップ関数（Flaskサーバーが終了する際に呼び出される）
