@@ -1,0 +1,19 @@
+{
+  "posts": [
+    {
+      "seat_num": "S1",
+      "availability": 0,
+      "id": 1
+    },
+    {
+      "seat_num": "S2",
+      "availability": 1,
+      "id": 2
+    },
+    {
+      "seat_num": "S3",
+      "availability": 0,
+      "id": 3
+    }
+  ]
+}
