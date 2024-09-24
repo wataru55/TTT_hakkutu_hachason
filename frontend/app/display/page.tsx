@@ -1,46 +1,55 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { BiChair } from "react-icons/bi";
+
+interface Info {
+  id: number;
+  seat_num: number;
+  availability: number;
+}
 
 export default function Display() {
-  const [faceDetected, setFaceDetected] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [infos, setInfos] = useState<Info[]>([]);
 
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch('http://localhost:5000/face_status');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setFaceDetected(data.face_detected);
+        const response = await fetch("http://localhost:5000/person_status", {
+          cache: "no-cache",
+        });
+        const data: Info[] = await response.json();
+        setInfos(data);
       } catch (err) {
-        setError((err as Error).message);
+        console.error(err);
       }
     };
 
-    //ページロード時に一度実行
     fetchFaceStatus();
 
-    //定期的に顔検出状態をチェックする
-    const interval = setInterval(fetchFaceStatus, 1000);
-
-    //クリーンアップ
-    return () => clearInterval(interval);
+    const interval = setInterval(fetchFaceStatus, 1000); // 定期的にフェッチ
+    return () => clearInterval(interval); // クリーンアップ
   }, []);
 
   return (
-    <div className='text-center mt-10'>
-      <h1>Next.js + Flask 顔検出ステータス</h1>
-      {error && <p className='text-red-500'>エラー: {error}</p>}
-      {faceDetected === null ? (
-        <p>データを取得中...</p>
-      ) : faceDetected === 1 ? (
-        <p className='text-green-500'>顔が検出されました！ (1)</p>
-      ) : (
-        <p className='text-red-500'>顔は検出されていません。 (0)</p>
-      )}
+    <div className="h-screen flex flex-col items-center p-20">
+      <h1 className="text-7xl mb-5">空き情報</h1>
+      <ul className="flex flex-wrap justify-center">
+        {infos.map((info) => (
+          <li
+            key={info.id}
+            className="mb-3 p-2 text-3xl flex flex-col items-center"
+          >
+            <BiChair
+              className={`${
+                info.availability === 1 ? "text-red-500" : "text-green-500"
+              }`}
+              size={80}
+            />
+            <span>{info.seat_num}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
