@@ -97,7 +97,7 @@ def hello():
 def person_status():
     data = [
         {
-            "seat_num": "S1",
+            "seat_num": "121",
             "availability": person_detected,
             "reserver": None,
             'id': "1"
