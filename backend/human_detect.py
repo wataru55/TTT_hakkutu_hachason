@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import threading
 import cv2
@@ -88,22 +88,58 @@ def detect_person():
 face_thread = threading.Thread(target=detect_person, daemon=True)
 face_thread.start()
 
-# Flaskアプリケーションのルートにアクセスしたときの応答
 @app.route('/')
 def hello():
     return "Hello from Flask!"
 
-# '/person_status'エンドポイントにアクセスしたとき、person_detectedの状態を返す
-@app.route('/person_status')
+# 人物(椅子)が検出されたかどうかを返すエンドポイント
+@app.route('/person_status', methods=['GET'])
 def person_status():
     data = [
         {
-            "seat_num": "S1",
+            "seat_num": "121",
             "availability": person_detected,
+            "reserver": None,
             'id': "1"
         },
     ]
     return jsonify(data)
+
+# データを保持するリスト
+data_store = []
+
+# # 外部からデータを受け取るエンドポイント
+# @app.route('/external_data', methods=['POST'])
+# def external_data():
+#     posted_data = request.get_json()
+
+#     data_store.append(posted_data)
+
+#     return jsonify({"data": posted_data}), 201
+
+# 外部からデータを受け取るエンドポイント(データを検出結果により変更)
+@app.route('/external_data', methods=['POST'])
+def external_data():
+    posted_data = request.get_json()
+
+    if posted_data.get("availability") == 2:
+        if person_detected == 0:
+            posted_data["availability"] = 2
+        else:
+            posted_data["availability"] = 1
+    
+    if posted_data.get("availability") == 1:
+        if person_detected == 0:
+            posted_data["availability"] = 0
+
+    data_store.append(posted_data)
+
+    return jsonify({"data": posted_data}), 201
+
+# 外部にデータを返すエンドポイント
+@app.route('/get_external_data', methods=['GET'])
+def get_external_data():
+    return jsonify({"stored_data": data_store}), 201
 
 # クリーンアップ関数（Flaskサーバーが終了する際に呼び出される）
 def shutdown():
