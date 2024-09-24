@@ -15,11 +15,16 @@ export default function Display() {
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch("http://localhost:5000/person_status", {
-          cache: "no-cache",
-        });
+        const response = await fetch(
+          "http://localhost:3001/get_external_data",
+          {
+            cache: "no-cache",
+          }
+        );
         const data: Info[] = await response.json();
+        console.log("data", data);
         setInfos(data);
+        console.log(data);
       } catch (err) {
         console.error(err);
       }
@@ -30,6 +35,10 @@ export default function Display() {
     const interval = setInterval(fetchFaceStatus, 1000); // 定期的にフェッチ
     return () => clearInterval(interval); // クリーンアップ
   }, []);
+
+  // 椅子を3個と5個のグループに分ける
+  const firstRow = infos.slice(0, 3);
+  const secondRow = infos.slice(3, 8);
 
   return (
     <div className="h-screen flex flex-col items-center p-20">
