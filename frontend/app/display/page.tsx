@@ -14,12 +14,9 @@ export default function Display() {
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/get_external_data",
-          {
-            cache: "no-cache",
-          }
-        );
+        const response = await fetch("http://localhost:5001/json_data", {
+          cache: "no-cache",
+        });
         const data: Info[] = await response.json();
         console.log("data", data);
         setInfos(data);
@@ -36,26 +33,27 @@ export default function Display() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col items-center p-20">
-      <h1 className="text-7xl mb-5">空き情報</h1>
-      <ul className="flex flex-wrap justify-center">
-        {infos.map((info) => (
-          <li
-            key={info.id}
-            className="mb-3 p-2 text-3xl flex flex-col items-center"
-          >
-            <BiChair
-              className={`${
-                info.availability === 1 || info.availability === 2
-                  ? "text-red-500"
-                  : "text-green-500"
-              }`}
-              size={80}
-            />
-            <span>{info.id}</span>
-          </li>
-        ))}
-      </ul>
+    <div className="flex justify-center items-center h-screen w-full">
+      <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
+        <ul className="flex flex-wrap justify-center">
+          {infos.map((info) => (
+            <li
+              key={info.id}
+              className="p-7 text-3xl flex flex-col items-center"
+            >
+              <BiChair
+                className={`${
+                  info.availability === 1 || info.availability === 2
+                    ? "text-gray-400 opacity-30"
+                    : "text-[#ab653d]"
+                }`}
+                size={120}
+              />
+              <span>{info.id}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
