@@ -6,6 +6,7 @@ import { BiChair } from "react-icons/bi";
 interface Info {
   id: number;
   availability: number;
+  reserver: number;
 }
 
 export default function Display() {
@@ -20,7 +21,6 @@ export default function Display() {
         const data: Info[] = await response.json();
         console.log("data", data);
         setInfos(data);
-        console.log(data);
       } catch (err) {
         console.error(err);
       }
@@ -41,6 +41,7 @@ export default function Display() {
               key={info.id}
               className="p-7 text-3xl flex flex-col items-center"
             >
+              <span>{info.id}</span>
               <BiChair
                 className={`${
                   info.availability === 1 || info.availability === 2
@@ -49,7 +50,13 @@ export default function Display() {
                 }`}
                 size={120}
               />
-              <span>{info.id}</span>
+              {info.availability === 0 && <p className="text-sm">利用可能</p>}
+              {info.availability === 1 && (
+                <span className="text-sm">{info.reserver}が整い中</span>
+              )}
+              {info.availability === 2 && (
+                <span className="text-sm">{info.reserver}が予約中</span>
+              )}
             </li>
           ))}
         </ul>
