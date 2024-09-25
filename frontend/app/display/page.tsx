@@ -16,7 +16,7 @@ export default function Display() {
     const fetchFaceStatus = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3001/get_external_data",
+          "http://localhost:5000/get_external_data",
           {
             cache: "no-cache",
           }
