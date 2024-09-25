@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // 正しいインポート
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface Info {
@@ -13,6 +13,7 @@ interface Info {
 
 export default function Reserve() {      
     const [infos, setInfo] = useState<Info[]>([]);
+    const [infos_reserve, setInfo_reserve] = useState<Info[]>([]);
     const [selectedSeat, setSelectedSeat] = useState<number | null>(null); // 選択された座席番号
     const [reserver, setReserver] = useState<string>(''); // 入力された名前
     const [state, setState] = useState<number | null>(null); // 予約状態
@@ -22,7 +23,7 @@ export default function Reserve() {
     useEffect(() => {
         const fetchFaceStatus = async () => {
             try {
-              const response = await fetch("http://localhost:5000/person_status", {
+              const response = await fetch("http://localhost:5000/get_external_data", {
                 cache: "no-cache",
               });
               const data: Info[] = await response.json();
@@ -30,7 +31,7 @@ export default function Reserve() {
             } catch (err) {
               console.error(err);
             }
-          };
+        };
 
         fetchFaceStatus();
 
@@ -40,7 +41,6 @@ export default function Reserve() {
 
     // 予約ボタンのハンドラー
     const handleReserve = async () => {
-        setState(2);
         
         if (selectedSeat === null) {
             alert('座席番号を選択してください。');
@@ -60,7 +60,7 @@ export default function Reserve() {
                 },
                 body: JSON.stringify({
                     seat_num: selectedSeat,
-                    availability: state,
+                    availability: 2,
                     reserver: reserver,                  
                     id: ID,
                 }),
@@ -70,7 +70,6 @@ export default function Reserve() {
             alert("予約が完了しました。")
             setSelectedSeat(null);
             setReserver('');
-            setState(null);
             setID(null);
 
             if (!response.ok) {
@@ -116,7 +115,7 @@ export default function Reserve() {
                         <h1 className='text-center text-3xl font-bold text-red-600 mb-5'>利用不可</h1>
                         <ul>
                             {infos.map((info) => (
-                                info.availability === 1 ? (
+                                info.availability === 1 || info.availability === 2 ? (
                                     <li key={info.id} className='mb-4'>
                                         <button 
                                             className='p-2 rounded-lg bg-gray-800 hover:bg-gray-900 cursor-not-allowed' 

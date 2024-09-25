@@ -47,7 +47,9 @@ export default function Display() {
           >
             <BiChair
               className={`${
-                info.availability === 1 ? "text-red-500" : "text-green-500"
+                info.availability === 1 || info.availability === 2
+                  ? "text-red-500"
+                  : "text-green-500"
               }`}
               size={80}
             />
