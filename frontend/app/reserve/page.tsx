@@ -40,6 +40,8 @@ export default function Reserve() {
 
     // 予約ボタンのハンドラー
     const handleReserve = async () => {
+        setState(2);
+        
         if (selectedSeat === null) {
             alert('座席番号を選択してください。');
             return;
@@ -58,8 +60,8 @@ export default function Reserve() {
                 },
                 body: JSON.stringify({
                     seat_num: selectedSeat,
-                    reserver: reserver,
                     availability: state,
+                    reserver: reserver,                  
                     id: ID,
                 }),
             });
@@ -100,7 +102,6 @@ export default function Reserve() {
                                             }`}
                                             onClick={() => {
                                                 setSelectedSeat(info.seat_num);
-                                                setState(2);
                                                 setID(info.id)                             
                                             }}                                            
                                         >

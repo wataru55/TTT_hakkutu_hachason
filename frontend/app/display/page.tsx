@@ -36,10 +36,6 @@ export default function Display() {
     return () => clearInterval(interval); // クリーンアップ
   }, []);
 
-  // 椅子を3個と5個のグループに分ける
-  const firstRow = infos.slice(0, 3);
-  const secondRow = infos.slice(3, 8);
-
   return (
     <div className="h-screen flex flex-col items-center p-20">
       <h1 className="text-7xl mb-5">空き情報</h1>
