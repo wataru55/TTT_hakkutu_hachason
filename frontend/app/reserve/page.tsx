@@ -16,12 +16,9 @@ export default function Reserve() {
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/get_external_data",
-          {
-            cache: "no-cache",
-          }
-        );
+        const response = await fetch("http://localhost:5001/json_data", {
+          cache: "no-cache",
+        });
         const data: Info[] = await response.json();
         setInfo(data);
       } catch (err) {
@@ -75,16 +72,13 @@ export default function Reserve() {
 
   return (
     <div className="flex justify-center items-center h-screen w-full">
-      <div className="flex flex-col items-center w-[80%] border border-gray-700 rounded-2xl p-5 z-50">
-        <div className="mb-5">
-          <h1 className="text-5xl text-center font-bold">~ Reserve ~</h1>
-        </div>
-        <div className="flex w-full justify-evenly items-center mb-10">
-          <div className="p-5 border shadow-inner shadow-white rounded-2xl">
-            <h1 className="text-center text-3xl font-bold mb-5 text-emerald-300">
-              利用可能
+      <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
+        <div className="flex w-full justify-evenly">
+          <div className="p-10 border shadow-white rounded-2xl mb-5 pt-5">
+            <h1 className="text-center text-3xl font-bold mb-5 text-[#d88758]">
+              予約可能
             </h1>
-            <ul>
+            <ul className="flex flex-col items-center">
               {infos.map((info) =>
                 info.availability === 0 ? (
                   <li key={info.id} className="mb-3">
@@ -96,18 +90,18 @@ export default function Reserve() {
                         setID(info.id);
                       }}
                     >
-                      Seat Number: {info.id}
+                      席番号: <span className="font-bold">{info.id}</span>
                     </button>
                   </li>
                 ) : null
               )}
             </ul>
           </div>
-          <div className="p-5 border shadow-inner shadow-white rounded-2xl">
-            <h1 className="text-center text-3xl font-bold text-red-600 mb-5">
-              利用不可
+          <div className="p-10 border shadow-white rounded-2xl mb-5 pt-5">
+            <h1 className="text-center text-3xl font-bold text-gray-400 opacity-50 mb-5">
+              予約不可
             </h1>
-            <ul>
+            <ul className="flex flex-col items-center">
               {infos.map((info) =>
                 info.availability === 1 || info.availability === 2 ? (
                   <li key={info.id} className="mb-4">
@@ -115,7 +109,7 @@ export default function Reserve() {
                       className="p-2 rounded-lg bg-gray-800 hover:bg-gray-900 cursor-not-allowed"
                       disabled
                     >
-                      Seat Number: {info.id}
+                      席番号: <span className="font-bold">{info.id}</span>
                     </button>
                   </li>
                 ) : null
@@ -125,20 +119,21 @@ export default function Reserve() {
         </div>
 
         {/* 選択された座席番号の表示 */}
-        {ID !== null && (
-          <div className="mb-5">
-            <p className="text-xl">
-              選択された座席番号: <span className="font-bold">{ID}</span>
-            </p>
-          </div>
-        )}
+        <div className="mb-5">
+          <p className="text-xl">
+            選択座席番号:{" "}
+            <span className="font-bold text-[#c09933]">
+              {ID !== null ? ID : ""}
+            </span>
+          </p>
+        </div>
 
         {/* 名前入力フィールド */}
         <div className="mb-5 w-full flex justify-center">
           <input
             type="text"
-            className="text-black text-center p-2 w-1/2 rounded-lg"
-            placeholder="ロッカー番号を入力してください"
+            className="text-black text-center p-2 w-1/3 rounded-lg bg-gray-400 placeholder-gray-800 outline-black"
+            placeholder="ロッカー番号を入力"
             value={reserver}
             onChange={(e) => setReserver(e.target.value)}
           />
