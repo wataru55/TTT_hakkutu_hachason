@@ -5,7 +5,6 @@ import { BiChair } from "react-icons/bi";
 
 interface Info {
   id: number;
-  seat_num: number;
   availability: number;
 }
 
@@ -53,7 +52,7 @@ export default function Display() {
               }`}
               size={80}
             />
-            <span>{info.seat_num}</span>
+            <span>{info.id}</span>
           </li>
         ))}
       </ul>
