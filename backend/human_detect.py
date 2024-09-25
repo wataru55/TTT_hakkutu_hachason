@@ -88,25 +88,124 @@ def detect_person():
 face_thread = threading.Thread(target=detect_person, daemon=True)
 face_thread.start()
 
-@app.route('/')
-def hello():
-    return "Hello from Flask!"
-
-# 人物(椅子)が検出されたかどうかを返すエンドポイント
-@app.route('/person_status', methods=['GET'])
-def person_status():
-    data = [
+data = [
         {
-            "seat_num": "121",
+            "seat_num": 1,
             "availability": person_detected,
             "reserver": None,
             'id': "1"
         },
+        {
+            "seat_num": 2,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "2"
+        },
+        {
+            "seat_num": 3,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "3"
+        },
+        {
+            "seat_num": 4,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "4"
+        },
+        {
+            "seat_num": 5,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "5"
+        },
+        {
+            "seat_num": 6,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "6"
+        },
+        {
+            "seat_num": 7,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "7"
+        },
+        {
+            "seat_num": 8,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "8"
+        },
     ]
-    return jsonify(data)
 
-# データを保持するリスト
-data_store = []
+# カメラのデータを保持するリスト
+data_reserve = [
+        {
+            "seat_num": 1,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "1"
+        },
+        {
+            "seat_num": 2,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "2"
+        },
+        {
+            "seat_num": 3,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "3"
+        },
+        {
+            "seat_num": 4,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "4"
+        },
+        {
+            "seat_num": 5,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "5"
+        },
+        {
+            "seat_num": 6,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "6"
+        },
+        {
+            "seat_num": 7,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "7"
+        },
+        {
+            "seat_num": 8,
+            "availability": person_detected,
+            "reserver": None,
+            'id': "8"
+        },
+    ]
+
+# if not data_reserve:
+#     data_reserve = data.copy()
+
+#print(data_reserve)
+
+# 人物(椅子)が検出されたかどうかを返すエンドポイント
+@app.route('/person_status', methods=['GET'])
+def person_status():
+    global data  # グローバルなdata配列を参照
+
+    # person_detectedに基づいてavailabilityを更新
+    for seat in data:
+        seat["availability"] = person_detected
+
+    return jsonify(data)
 
 # # 外部からデータを受け取るエンドポイント
 # @app.route('/external_data', methods=['POST'])
@@ -122,24 +221,41 @@ data_store = []
 def external_data():
     posted_data = request.get_json()
 
-    if posted_data.get("availability") == 2:
-        if person_detected == 0:
-            posted_data["availability"] = 2
-        else:
-            posted_data["availability"] = 1
+    seat_id = posted_data.get("id")  # "id" キーが存在しない場合は None になる   
+    if seat_id is None:
+        return jsonify({"error": "Invalid data, 'id' field is missing"}), 400  # idがない場合はエラーレスポンスを返す
     
-    if posted_data.get("availability") == 1:
-        if person_detected == 0:
-            posted_data["availability"] = 0
+    data_reserve[int(seat_id) - 1]["availability"] = posted_data.get("availability")
+    data_reserve[int(seat_id) - 1]["reserver"] = posted_data.get("reserver")
 
-    data_store.append(posted_data)
-
+    print("test1", data_reserve)
     return jsonify({"data": posted_data}), 201
 
 # 外部にデータを返すエンドポイント
 @app.route('/get_external_data', methods=['GET'])
 def get_external_data():
-    return jsonify({"stored_data": data_store}), 201
+    for seat in data:
+        seat["availability"] = person_detected
+    
+    for i, seat in enumerate(data_reserve):
+        # data_reserve の seat に対して処理を行う
+        if seat["availability"] == 2:
+            print("recognize", data[i]["availability"])
+            # 対応する data の availability を確認
+            if data[i]["availability"] == 0:
+                seat["availability"] = 2
+                print(1)
+            elif data[i]["availability"] == 1:
+                seat["availability"] = 1
+                print(2)
+
+        if seat["availability"] == 1:
+            if data[i]["availability"] == 0:
+                seat["availability"] = 0
+
+    print("test2", data_reserve)
+    return jsonify(data_reserve)
+
 
 # クリーンアップ関数（Flaskサーバーが終了する際に呼び出される）
 def shutdown():
