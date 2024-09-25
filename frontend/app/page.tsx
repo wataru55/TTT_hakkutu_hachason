@@ -26,7 +26,7 @@ export default function Display() {
        <div className='h-[30%] w-full border-t border-zinc-600'>
         <div className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10'>
           <p className='steam-01'>
-            <img src="/steam.svg" alt="steam" />
+            <img src="/steam2.svg" alt="steam" />
           </p>
         </div>
       </div>
