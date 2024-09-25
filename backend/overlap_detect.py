@@ -30,12 +30,6 @@ running = True  # スレッドを実行中かどうかのフラグ
 # 座席データの保存先
 seats_file = os.path.join(script_dir, 'seats.json')
 
-# 座席データの構造
-seats_data = {
-    "chairs": [],
-    "benches": []
-}
-
 # 椅子とベンチの検出対象クラス
 TARGET_CLASSES = ['bench', 'chair']
 
@@ -147,13 +141,6 @@ def detect_and_save_seats():
     with open(seats_file, 'w') as f:
         json.dump(seats_data, f, indent=4)
     print(f"座席データを {seats_file} に保存しました。")
-
-
-    # 座席データをファイルに保存
-    with open(seats_file, 'w') as f:
-        json.dump(seats_data, f, indent=4)
-    print(f"座席データを {seats_file} に保存しました。")
-
 
 def resize_with_padding(frame, target_size=(640, 640)):
     original_h, original_w = frame.shape[:2]
@@ -268,24 +255,95 @@ detect_and_save_seats()
 # 別スレッドで人物検出を開始
 start_detection_thread()
 
-@app.route('/')
-def hello():
-    return "Hello from Flask!"
+data = []
+data_reserve = []
 
-# 座席の空き状況を返すエンドポイント
-@app.route('/seat_status', methods=['GET'])
-def seat_status():
-    output = []
-    for seat_data in seats_data:
-        data = {
-            "seat_num": seat_data["id"],
+for seat_data in seats_data:
+        data_info = {
+            "id": seat_data["id"],
             "availability": 1 if seat_data["occupied"] else 0,
             "reserver": None
         }
 
-        output.append(data)
-    print(output)
-    return jsonify(output)
+        data.append(data_info)
+
+for seat_data in seats_data:
+        data_info = {
+            "id": seat_data["id"],
+            "availability": 1 if seat_data["occupied"] else 0,
+            "reserver": None
+        }
+
+        data_reserve.append(data_info)
+
+print(data)
+
+@app.route('/person_status', methods=['GET'])
+def person_status():
+    global data  # グローバルなdata配列を参照
+
+    # person_detectedに基づいてavailabilityを更新
+    for i, seat in enumerate(seats_data):
+        data[i]["availability"] = 1 if seat["occupied"] else 0,
+
+    return jsonify(data)
+
+@app.route('/external_data', methods=['POST'])
+def external_data():
+    posted_data = request.get_json()
+
+    seat_id = posted_data.get("id")  # "id" キーが存在しない場合は None になる   
+    if seat_id is None:
+        return jsonify({"error": "Invalid data, 'id' field is missing"}), 400  # idがない場合はエラーレスポンスを返す
+    
+    data_reserve[int(seat_id) - 1]["availability"] = posted_data.get("availability")
+    data_reserve[int(seat_id) - 1]["reserver"] = posted_data.get("reserver")
+
+    # print("test1", data_reserve)
+    return jsonify({"data": posted_data}), 201
+
+
+# 外部にデータを返すエンドポイント
+@app.route('/get_external_data', methods=['GET'])
+def get_external_data():
+    for i, seat in enumerate(seats_data):
+        print(f"seat: {seat}, type: {type(seat)}")  # デバッグ用にseatの内容を出力
+
+        data[i]["availability"] = 1 if seat["occupied"] else 0
+    
+    for i, seat in enumerate(data_reserve):
+        # data_reserve の seat に対して処理を行う
+        if seat["availability"] == 2:
+            # print("recognize", data[i]["availability"])
+            # 対応する data の availability を確認
+            if data[i]["availability"] == 0:
+                seat["availability"] = 2
+                # print(1)
+            elif data[i]["availability"] == 1:
+                seat["availability"] = 1
+                # print(2)
+
+        if seat["availability"] == 1:
+            if data[i]["availability"] == 0:
+                seat["availability"] = 0
+
+    # print("test2", data_reserve)
+    return jsonify(data_reserve)
+
+# 座席の空き状況を返すエンドポイント
+# @app.route('/seat_status', methods=['GET'])
+# def seat_status():
+#     output = []
+#     for seat_data in seats_data:
+#         data = {
+#             "id": seat_data["id"],
+#             "availability": 1 if seat_data["occupied"] else 0,
+#             "reserver": None
+#         }
+
+#         output.append(data)
+#     print(output)
+#     return jsonify(output)
 
 # クリーンアップ関数（Flaskサーバーが終了する際に呼び出される）
 def shutdown():
