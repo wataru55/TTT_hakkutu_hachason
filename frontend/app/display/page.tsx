@@ -80,6 +80,11 @@ export default function Display() {
           ))}
         </ul>
       </div>
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
+          <p className="steam-02">
+            <img src="/steam2.svg" alt="steam" />
+          </p>
+      </div>
     </div>
   );
 }
