@@ -72,12 +72,12 @@ export default function Reserve() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
+    <div className="relative flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
       <Clock />
       <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <div className="flex w-full justify-evenly">
           <div className="p-10 border shadow-white rounded-2xl mb-5 pt-5">
-            <h1 className="text-center text-3xl font-bold mb-5 text-[#d88758] font-serif">
+            <h1 className="text-center text-3xl font-bold mb-5 text-white font-serif">
               予約可能
             </h1>
             <ul className="flex flex-col items-center">
@@ -148,6 +148,11 @@ export default function Reserve() {
             予約する
           </button>
         </div>
+      </div>
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
+          <p className="steam-02">
+            <img src="/steam2.svg" alt="steam" />
+          </p>
       </div>
     </div>
   );
