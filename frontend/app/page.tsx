@@ -7,7 +7,7 @@ export default function Display() {
       <div className="flex flex-col justify-center p-2 h-[40%]">
         <div className="text-center mb-10">
           <h1 className="text-7xl mb-5 font-serif font-bold">
-            整<span className="font-sans font-thin">know</span>
+            整<span className="font-sans font-medium">know</span>
           </h1>
           <h1 className="text-3xl font-serif">整いスペース事前予約サービス</h1>
         </div>
