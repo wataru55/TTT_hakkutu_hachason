@@ -17,9 +17,12 @@ export default function Reserve() {
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch("http://localhost:5000/person_status", {
-          cache: "no-cache",
-        });
+        const response = await fetch(
+          "http://localhost:5000/get_external_data",
+          {
+            cache: "no-cache",
+          }
+        );
         const data: Info[] = await response.json();
         setInfo(data);
       } catch (err) {
@@ -150,9 +153,9 @@ export default function Reserve() {
         </div>
       </div>
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
-          <p className="steam-02">
-            <img src="/steam2.svg" alt="steam" />
-          </p>
+        <p className="steam-02">
+          <img src="/steam2.svg" alt="steam" />
+        </p>
       </div>
     </div>
   );

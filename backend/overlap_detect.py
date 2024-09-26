@@ -34,7 +34,7 @@ seats_file = os.path.join(script_dir, 'seats.json')
 TARGET_CLASSES = ['bench', 'chair']
 
 # 重なり具合の閾値（IoU）
-IOU_THRESHOLD = 0.7  # 必要に応じて調整
+IOU_THRESHOLD = 0.6  # 必要に応じて調整
 
 # 関数: バウンディングボックスのIoUを計算
 def compute_coverage_ratio(box1, box2):
@@ -132,10 +132,6 @@ def detect_and_save_seats():
                     "occupied": False
                 }
                 seats_data.append(seat_info)
-                print("************************")
-                print(seat_info)
-                print("************************")
-                print(f"{class_name.capitalize()} detected and saved: {seat_info['box']}")
 
     # 座席データをファイルに保存
     with open(seats_file, 'w') as f:
@@ -164,7 +160,6 @@ def resize_with_padding(frame, target_size=(640, 640)):
 
 # 関数: 人物検出と座席の占有状況更新
 def detect_person_and_update():
-    print("start_detection_func")
     global person_detected, cap, running, seats_data
 
     # YOLOXモデルをONNXランタイムを使用して読み込む
@@ -245,7 +240,6 @@ def detect_person_and_update():
 
 # 別スレッドで人物検出と座席占有状況の更新を実行
 def start_detection_thread():
-    print("Starting detection thread...")
     detection_thread = threading.Thread(target=detect_person_and_update, daemon=True)
     detection_thread.start()
 
@@ -276,18 +270,6 @@ for seat_data in seats_data:
 
         data_reserve.append(data_info)
 
-print(data)
-
-@app.route('/person_status', methods=['GET'])
-def person_status():
-    global data  # グローバルなdata配列を参照
-
-    # person_detectedに基づいてavailabilityを更新
-    for i, seat in enumerate(seats_data):
-        data[i]["availability"] = 1 if seat["occupied"] else 0,
-
-    return jsonify(data)
-
 @app.route('/external_data', methods=['POST'])
 def external_data():
     posted_data = request.get_json()
@@ -299,7 +281,6 @@ def external_data():
     data_reserve[int(seat_id) - 1]["availability"] = posted_data.get("availability")
     data_reserve[int(seat_id) - 1]["reserver"] = posted_data.get("reserver")
 
-    # print("test1", data_reserve)
     return jsonify({"data": posted_data}), 201
 
 
@@ -307,43 +288,23 @@ def external_data():
 @app.route('/get_external_data', methods=['GET'])
 def get_external_data():
     for i, seat in enumerate(seats_data):
-        print(f"seat: {seat}, type: {type(seat)}")  # デバッグ用にseatの内容を出力
 
         data[i]["availability"] = 1 if seat["occupied"] else 0
     
     for i, seat in enumerate(data_reserve):
         # data_reserve の seat に対して処理を行う
         if seat["availability"] == 2:
-            # print("recognize", data[i]["availability"])
             # 対応する data の availability を確認
             if data[i]["availability"] == 0:
                 seat["availability"] = 2
-                # print(1)
             elif data[i]["availability"] == 1:
                 seat["availability"] = 1
-                # print(2)
 
         if seat["availability"] == 1:
             if data[i]["availability"] == 0:
                 seat["availability"] = 0
 
-    # print("test2", data_reserve)
     return jsonify(data_reserve)
-
-# 座席の空き状況を返すエンドポイント
-# @app.route('/seat_status', methods=['GET'])
-# def seat_status():
-#     output = []
-#     for seat_data in seats_data:
-#         data = {
-#             "id": seat_data["id"],
-#             "availability": 1 if seat_data["occupied"] else 0,
-#             "reserver": None
-#         }
-
-#         output.append(data)
-#     print(output)
-#     return jsonify(output)
 
 # クリーンアップ関数（Flaskサーバーが終了する際に呼び出される）
 def shutdown():
