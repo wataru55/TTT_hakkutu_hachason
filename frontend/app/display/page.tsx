@@ -16,7 +16,7 @@ export default function Display() {
   useEffect(() => {
     const fetchFaceStatus = async () => {
       try {
-        const response = await fetch("http://localhost:5001/json_data", {
+        const response = await fetch("http://localhost:5000/get_external_data", {
           cache: "no-cache",
         });
         const data: Info[] = await response.json();
