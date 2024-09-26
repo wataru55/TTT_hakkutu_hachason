@@ -36,7 +36,7 @@ TARGET_CLASSES = ['bench', 'chair']
 # 重なり具合の閾値（IoU）
 IOU_THRESHOLD = 0.6  # 必要に応じて調整
 
-# 関数: バウンディングボックスのIoUを計算
+# 関数: バウンディングボックスのカバレッジ率を計算
 def compute_coverage_ratio(box1, box2):
     """
     Compute the coverage ratio of box1 and box2 overlapping.
@@ -118,20 +118,35 @@ def detect_and_save_seats():
     if dets is not None:
         final_cls_inds = dets[:, 5]  # 検出されたクラスID
         final_boxes = dets[:, :4]  # バウンディングボックス
-        for cls_ind, box in zip(final_cls_inds, final_boxes):
-            class_name = COCO_CLASSES[int(cls_ind)]
-            if class_name in TARGET_CLASSES:
-                seat_info = {
-                    "id": len(seats_data) + 1,
-                    "box": {
-                        "x_min": float(box[0]),
-                        "y_min": float(box[1]),
-                        "x_max": float(box[2]),
-                        "y_max": float(box[3])
-                    },
-                    "occupied": False
-                }
-                seats_data.append(seat_info)
+    
+        # 検出された椅子のバウンディングボックスとクラスIDを結合してリストにする
+        seats = [
+            (box, COCO_CLASSES[int(cls_ind)])
+            for cls_ind, box in zip(final_cls_inds, final_boxes)
+            if COCO_CLASSES[int(cls_ind)] in TARGET_CLASSES
+        ]
+    
+        # x_min, y_minの座標でソート（左上から右下にかけて順番に）
+        seats.sort(key=lambda x: (x[0][0], x[0][1]))
+
+        # 座席データの初期化
+        seats_data = []
+
+        # ソートされた椅子に対して番号を振る
+        for idx, (box, class_name) in enumerate(seats, start=1):
+            seat_info = {
+                "id": idx,  # ソート順に番号を付ける
+                "box": {
+                    "x_min": float(box[0]),
+                    "y_min": float(box[1]),
+                    "x_max": float(box[2]),
+                    "y_max": float(box[3])
+                },
+                "occupied": False,
+                "true_count": 0,
+                "false_count": 0
+            }
+            seats_data.append(seat_info)
 
     # 座席データをファイルに保存
     with open(seats_file, 'w') as f:
@@ -215,7 +230,7 @@ def detect_person_and_update():
                 class_name = COCO_CLASSES[int(cls_ind)]
                 if class_name == 'person':
                     print('Person detected!')
-                    person_detected = 1  # 'person'が検出されたらフラグを立てる
+                    person_detected = 1  # 'person'が検出されたらフラグを立てる 
                     # 各座席と重なり具合をチェック
                     for seat in seats_data:
                         seat_box = [
@@ -224,11 +239,14 @@ def detect_person_and_update():
                         ]
                         ratio = compute_coverage_ratio(box, seat_box)
                         if ratio > IOU_THRESHOLD:
-                            seat["occupied"] = True  # 重なっていればTrueに設定
-                        # 重なっていない場合は何もしない
-        
+                            seat["true_count"] += 1
+                            seat["false_count"] = 0
+                            if seat["true_count"] >= 3:
+                                seat["occupied"] = True  # 重なっていればTrueに設定
+                                seat["true_count"] = 0
+   
         for seat in seats_data:
-            print(f"Seat {seat['id']}: {seat['occupied']}")
+            print(f"Seat {seat['id']} true_count: {seat['true_count']}, false_count: {seat['false_count']}, {seat['occupied']}")
 
         print('-----------------------------')
 
