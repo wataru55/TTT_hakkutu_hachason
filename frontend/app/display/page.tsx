@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Clock from "../components/Clock";
+import Image from "next/image";
 
 interface Info {
   id: number;
@@ -33,7 +33,7 @@ export default function Display() {
   }, []);
 
   return (
-    <div className="relative flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-78px)] w-full">
       <Clock />
       <div className="flex flex-col items-center w-[80%] min-h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <ul className="flex flex-wrap justify-center">
@@ -45,20 +45,20 @@ export default function Display() {
               <span>{info.id}</span>
               {info.availability === 1 || info.availability === 2 ? (
                 <Image
-                src="/chair_gray.png"
-                alt="chair_gray"
-                width={120}
-                height={120}
-                className="opacity-30"
-              />
+                  src="/chair_gray.png"
+                  alt="chair_gray"
+                  width={120}
+                  height={120}
+                  className="opacity-30"
+                />
               ) : (
                 <Image
-                src="/chair_white.png"
-                alt="chair_white"
-                width={120}
-                height={120}
-              />
-              )}              
+                  src="/chair_white.png"
+                  alt="chair_white"
+                  width={120}
+                  height={120}
+                />
+              )}
               {info.availability === 0 && <p className="text-sm">利用可能</p>}
               {info.availability === 1 && (
                 <span className="text-sm">

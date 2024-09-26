@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Display() {
   return (
-    <div className="relative flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full px-10">
+    <div className="relative flex flex-col justify-center items-center h-[calc(100vh-78px)] w-full px-10">
       <div className="h-[30%] w-full border-b border-zinc-600"></div>
       <div className="flex flex-col justify-center p-2 h-[40%]">
         <div className="text-center mb-10">

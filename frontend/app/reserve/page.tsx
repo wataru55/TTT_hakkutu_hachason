@@ -72,7 +72,7 @@ export default function Reserve() {
   };
 
   return (
-    <div className="relative flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-78px)] w-full">
       <Clock />
       <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <div className="flex w-full justify-evenly">
