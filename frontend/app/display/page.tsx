@@ -19,7 +19,6 @@ export default function Display() {
           cache: "no-cache",
         });
         const data: Info[] = await response.json();
-        console.log("data", data);
         setInfos(data);
       } catch (err) {
         console.error(err);
@@ -34,7 +33,7 @@ export default function Display() {
 
   return (
     <div className="flex justify-center items-center h-screen w-full">
-      <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
+      <div className="flex flex-col items-center w-[80%] min-h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <ul className="flex flex-wrap justify-center">
           {infos.map((info) => (
             <li
@@ -52,10 +51,20 @@ export default function Display() {
               />
               {info.availability === 0 && <p className="text-sm">利用可能</p>}
               {info.availability === 1 && (
-                <span className="text-sm">{info.reserver}が整い中</span>
+                <span className="text-sm">
+                  <span className="bg-[#e8bc43] text-black font-bold rounded-md">
+                    {info.reserver}
+                  </span>
+                  が整い中
+                </span>
               )}
               {info.availability === 2 && (
-                <span className="text-sm">{info.reserver}が予約中</span>
+                <span className="text-sm">
+                  <span className="bg-[#e8bc43] text-black font-bold rounded-md">
+                    {info.reserver}
+                  </span>
+                  が予約中
+                </span>
               )}
             </li>
           ))}
