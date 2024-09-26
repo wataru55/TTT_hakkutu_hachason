@@ -43,14 +43,22 @@ export default function Display() {
               className="p-7 text-3xl flex flex-col items-center"
             >
               <span>{info.id}</span>
-              <BiChair
-                className={`${
-                  info.availability === 1 || info.availability === 2
-                    ? "text-gray-400 opacity-30"
-                    : "text-[#ab653d]"
-                }`}
-                size={120}
+              {info.availability === 1 || info.availability === 2 ? (
+                <Image
+                src="/chair_gray.png"
+                alt="chair_gray"
+                width={120}
+                height={120}
+                className="opacity-30"
               />
+              ) : (
+                <Image
+                src="/chair_white.png"
+                alt="chair_white"
+                width={120}
+                height={120}
+              />
+              )}              
               {info.availability === 0 && <p className="text-sm">利用可能</p>}
               {info.availability === 1 && (
                 <span className="text-sm">
