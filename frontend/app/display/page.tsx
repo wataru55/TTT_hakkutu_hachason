@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { BiChair } from "react-icons/bi";
-import Image from "next/image"
+import Clock from "../components/Clock";
 
 interface Info {
   id: number;
@@ -33,7 +33,8 @@ export default function Display() {
   }, []);
 
   return (
-    <div className="flex justify-center items-center h-screen w-full">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
+      <Clock />
       <div className="flex flex-col items-center w-[80%] min-h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <ul className="flex flex-wrap justify-center">
           {infos.map((info) => (
@@ -61,18 +62,18 @@ export default function Display() {
               {info.availability === 0 && <p className="text-sm">利用可能</p>}
               {info.availability === 1 && (
                 <span className="text-sm">
-                  <span className="bg-[#e8bc43] text-black font-bold rounded-md">
+                  <span className="bg-[#e8bc43] text-black font-bold rounded-md p-0.5">
                     {info.reserver}
                   </span>
-                  が整い中
+                  &nbsp;整い中
                 </span>
               )}
               {info.availability === 2 && (
                 <span className="text-sm">
-                  <span className="bg-[#e8bc43] text-black font-bold rounded-md">
+                  <span className="bg-[#e8bc43] text-black font-bold rounded-md p-0.5">
                     {info.reserver}
                   </span>
-                  が予約中
+                  &nbsp;予約中
                 </span>
               )}
             </li>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Clock from "../components/Clock";
 
 interface Info {
   id: number;
@@ -71,7 +72,8 @@ export default function Reserve() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen w-full">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-20px)] w-full">
+      <Clock />
       <div className="flex flex-col items-center w-[80%] h-[500px] border border-gray-700 rounded-2xl p-5 z-50 justify-center">
         <div className="flex w-full justify-evenly">
           <div className="p-10 border shadow-white rounded-2xl mb-5 pt-5">
