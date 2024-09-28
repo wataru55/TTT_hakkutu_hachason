@@ -1,4 +1,4 @@
-# TTT_hakkutu
+# TTT_hakkutsu
 ## 概要
 外気浴のスペースが満員で，満足に整うことができないという課題を解決するための，整いスペース予約システム
 
@@ -12,6 +12,9 @@
 
 ## 詳細
 [Topa'z](https://topaz.dev/projects/1a5a4ffedaa05c7a06b4)
+
+progate賞をいただきました．
+[X](https://x.com/Hackz_team/status/1839221550186377516?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Etweet)
 
 <br>
 
