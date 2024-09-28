@@ -13,7 +13,7 @@
 ## 詳細
 [Topa'z_TTT_整know](https://topaz.dev/projects/1a5a4ffedaa05c7a06b4)
 
-[progate賞をいただきました．](https://x.com/Hackz_team/status/1839221550186377516?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Etweet)
+[progate賞をいただきました](https://x.com/Hackz_team/status/1839221550186377516?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Etweet)
 
 <br>
 
